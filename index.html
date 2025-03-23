@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Psicólogo Virtual</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f0f8ff;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    .psychologist-image {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      margin: 20px auto;
+      object-fit: cover;
+    }
+    .response {
+      font-size: 18px;
+      margin: 20px 0;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      background-color: #007bff;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <img 
+      src="https://via.placeholder.com/150" 
+      alt="Psicólogo Virtual" 
+      class="psychologist-image"
+    />
+    <h1>Psicólogo Virtual</h1>
+    <p class="response">Clique no botão e comece a falar.</p>
+    <button id="speak-btn">Falar com o Psicólogo</button>
+  </div>
+
+  <script>
+    const btn = document.getElementById('speak-btn');
+    const responseElement = document.querySelector('.response');
+
+    // Função para iniciar o reconhecimento de voz
+    function startRecognition() {
+      const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+      recognition.lang = 'pt-BR';
+      recognition.start();
+
+      recognition.onresult = (event) => {
+        const userSpeech = event.results[0][0].transcript;
+        handleResponse(userSpeech);
+      };
+
+      recognition.onerror = (error) => {
+        responseElement.textContent = "Desculpe, não consegui entender. Tente novamente.";
+        console.error(error);
+      };
+    }
+
+    // Função para responder ao usuário
+    function handleResponse(userSpeech) {
+      responseElement.textContent = `Você disse: "${userSpeech}"`;
+
+      let responseText = "Que interessante, me conte mais sobre isso.";
+      if (userSpeech.includes('ansioso')) {
+        responseText = "Entendo que você está se sentindo ansioso. Vamos respirar fundo juntos.";
+      } else if (userSpeech.includes('feliz')) {
+        responseText = "Que ótimo saber que você está feliz! Conte-me mais sobre isso.";
+      }
+
+      // Fala a resposta
+      const utterance = new SpeechSynthesisUtterance(responseText);
+      utterance.lang = 'pt-BR';
+      window.speechSynthesis.speak(utterance);
+
+      responseElement.textContent = responseText;
+    }
+
+    btn.addEventListener('click', startRecognition);
+  </script>
+</body>
+</html>
